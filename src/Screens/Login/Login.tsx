@@ -1,7 +1,7 @@
 import { Auth } from 'aws-amplify';
 import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from '../../axiosConfig';
+import axios from '../../authAxiosConfig';
 import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
 import { toast } from 'react-toastify';
 import Button from '@mui/material/Button';
@@ -24,17 +24,19 @@ const Login = () => { // ! loader
 
     const signIn = async () => {
         try {
-            await Auth.signIn({ username: email, password });
+            const response = await Auth.signIn({ username: email, password });
 
-            // const { data } = await axios.post<StatusCodesResponse>('/sign_in', {
-            //     email,
-            //     user_type: 'manager',
-            //     device_token: '0000000'
-            // });
+            console.log(JSON.parse(JSON.stringify(response)))
 
-            // if (errorStatusCodes[data.status]) {
-            //     throw new Error(errorStatusCodes[data.status]);
-            // }
+            const { data } = await axios.post<StatusCodesResponse>('/sign_in', {
+                email,
+                user_type: 'manager',
+                device_token: '0000000'
+            });
+
+            if (errorStatusCodes[data.status]) {
+                throw new Error(errorStatusCodes[data.status]);
+            }
 
             navigate('/');
         } catch (error: any) {

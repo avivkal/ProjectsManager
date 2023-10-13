@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ReactCodeInput from 'react-verification-code-input';
 import { toast } from 'react-toastify';
-import axios from '../../axiosConfig';
+import axios from '../../authAxiosConfig';
 import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
 import Loader from "react-spinners/BeatLoader";
 import Button from '@mui/material/Button';
@@ -29,14 +29,14 @@ const ConfirmSignup = () => {
         try {
             await Auth.confirmSignUp(email, verificationCode);
 
-            // const { data } = await axios.post<StatusCodesResponse>('/sign_up', {
-            //     email,
-            //     user_type: 'manager'
-            // });
+            const { data } = await axios.post<StatusCodesResponse>('/sign_up', {
+                email,
+                user_type: 'manager'
+            });
 
-            // if (errorStatusCodes[data.status]) {
-            //     throw new Error(errorStatusCodes[data.status]);
-            // }
+            if (errorStatusCodes[data.status]) {
+                throw new Error(errorStatusCodes[data.status]);
+            }
 
             navigate('/login');
 
@@ -48,6 +48,10 @@ const ConfirmSignup = () => {
         } finally {
             setIsLoading(false);
         }
+    }
+
+    const resendCode = async () => {
+        await Auth.resendSignUp(email);
     }
 
     const isVerifyButtonDisabled = verificationCode.length !== VALID_VERIFICATION_CODE_LENGTH || isLoading;
@@ -64,6 +68,8 @@ const ConfirmSignup = () => {
                 loading={isLoading}
                 onChange={handleVerificationCodeChange}
             />
+
+            <Button onClick={resendCode} style={{ marginTop: '5px' }} variant="text">Resend code</Button>
 
             <Button
                 style={{ marginTop: '13px' }}
