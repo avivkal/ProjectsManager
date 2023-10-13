@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from '../../axiosConfig';
 import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
 import { toast } from 'react-toastify';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 
 const Login = () => { // ! loader
@@ -44,34 +46,34 @@ const Login = () => { // ! loader
     };
 
     return (
-        <div>
-            <h2>Sign In</h2>
-            <div>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={handleEmailChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="text"
-                        id="password"
-                        name="password"
-                        value={password}
-                        onChange={handlePassswordChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <button onClick={signIn}>Sign In</button>
-                </div>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <h2 style={{ color: '#897d7d', fontWeight: 400 }}>Sign In</h2>
+
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <TextField
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={handleEmailChange}
+                    label="Email"
+                    variant="outlined" />
+
+                <TextField
+                    style={{ marginTop: '10px' }}
+                    type="text"
+                    id="password"
+                    name="password"
+                    value={password}
+                    onChange={handlePassswordChange}
+                    label="Password"
+                    variant="outlined" />
+
+                <Button
+                    style={{ marginTop: '13px' }}
+                    onClick={signIn}
+                    variant="contained">Sign In</Button>
+
             </div>
         </div>
     );

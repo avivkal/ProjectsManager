@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import axios from '../../axiosConfig';
 import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
 import Loader from "react-spinners/BeatLoader";
+import Button from '@mui/material/Button';
 
 const VALID_VERIFICATION_CODE_LENGTH = 6;
 
@@ -52,14 +53,22 @@ const ConfirmSignup = () => {
     const isVerifyButtonDisabled = verificationCode.length !== VALID_VERIFICATION_CODE_LENGTH || isLoading;
 
     return (
-        <div>
-            <label htmlFor="verificationCode">Verification Code:</label>
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginTop: '30px'
+        }}>
+            <h2 style={{ color: '#897d7d', fontWeight: 400 }}>Verification Code</h2>
             <ReactCodeInput
-            loading={isLoading}
+                loading={isLoading}
                 onChange={handleVerificationCodeChange}
             />
 
-            <button disabled={isVerifyButtonDisabled} onClick={verifyCode}>Verify</button>
+            <Button
+                style={{ marginTop: '13px' }}
+                disabled={isVerifyButtonDisabled} onClick={verifyCode}
+                variant="contained">Verify</Button>
 
         </div>
     );

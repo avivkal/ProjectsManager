@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from '../../axiosConfig';
 import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
 
 
 const Signup = () => { // ! loader
@@ -55,35 +57,38 @@ const Signup = () => { // ! loader
         }
     };
 
+    console.log(email)
+
     return (
-        <div>
-            <h2>Signup</h2>
-            <div>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={email}
-                        onChange={handleEmailChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input
-                        type="text"
-                        id="password"
-                        name="password"
-                        value={password}
-                        onChange={handlePassswordChange}
-                        required
-                    />
-                </div>
-                <div>
-                    <button onClick={createAccount}>Create Account</button>
-                </div>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+            <h2 style={{ color: '#897d7d', fontWeight: 400 }}>Signup</h2>
+
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+
+                <TextField
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={email}
+                    onChange={handleEmailChange}
+                    label="Email"
+                    variant="outlined" />
+
+                <TextField
+                    style={{ marginTop: '10px' }}
+                    type="text"
+                    id="password"
+                    name="password"
+                    value={password}
+                    onChange={handlePassswordChange}
+                    label="Password"
+                    variant="outlined" />
+
+                <Button
+                    style={{ marginTop: '13px' }}
+                    onClick={createAccount}
+                    variant="contained">Create Account</Button>
+
             </div>
         </div>
     );
