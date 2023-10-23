@@ -1,12 +1,11 @@
+import Button from '@mui/material/Button';
 import { Auth } from 'aws-amplify';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ReactCodeInput from 'react-verification-code-input';
 import { toast } from 'react-toastify';
+import ReactCodeInput from 'react-verification-code-input';
 import axios from '../../authAxiosConfig';
 import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
-import Loader from "react-spinners/BeatLoader";
-import Button from '@mui/material/Button';
 
 const VALID_VERIFICATION_CODE_LENGTH = 6;
 

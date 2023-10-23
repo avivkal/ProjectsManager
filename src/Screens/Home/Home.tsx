@@ -1,14 +1,13 @@
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import { Autocomplete, Button, Checkbox, CircularProgress, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { Auth } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import axios from '../../generalAxiosConfig';
-import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
-import { AllSkills, MatchingVolunteers, Skill, Status, Volunteer } from '../../utils/types';
 import VolunteersTable from '../../Components/VolunteersTable/VolunteersTable';
+import axios from '../../generalAxiosConfig';
+import { errorStatusCodes } from '../../utils/statusCodes';
+import { AllSkills, MatchingVolunteers, Skill, Volunteer } from '../../utils/types';
 
 
 const mapSelection = {
