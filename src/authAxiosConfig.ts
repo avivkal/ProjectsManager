@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://djdq309mch.execute-api.us-west-2.amazonaws.com/d'
+  baseURL: 'https://2d9im2s1u0.execute-api.il-central-1.amazonaws.com/p'
 });
 
 instance.interceptors.request.use(

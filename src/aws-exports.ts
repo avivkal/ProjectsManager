@@ -1,8 +1,8 @@
 const awsConfig = {
     Auth: {
-        region: "us-west-2",
-        userPoolId: "us-west-2_7LZpZQNkU",
-        userPoolWebClientId: "778u4hn4177bqdar0pfelkr5oo",
+        region: "il-central-1",
+        userPoolId: "il-central-1_QhM61gTjU",
+        userPoolWebClientId: "7sd7cbo1ceffvjpcdmra14i0on",
     }
 };
 

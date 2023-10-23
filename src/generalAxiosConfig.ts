@@ -2,7 +2,7 @@ import axios from 'axios';
 import { Auth } from 'aws-amplify';
 
 const instance = axios.create({
-  baseURL: 'https://b0474gii3b.execute-api.us-west-2.amazonaws.com/d'
+  baseURL: 'https://jd8yof0e8f.execute-api.il-central-1.amazonaws.com/p'
 });
 
 instance.interceptors.request.use(

@@ -1,75 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import axios from '../../generalAxiosConfig'
-import { Auth } from 'aws-amplify';
-import { toast } from 'react-toastify';
-import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
-import { Autocomplete, Button, Checkbox, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
-import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import { Autocomplete, Button, Checkbox, CircularProgress, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { Auth } from 'aws-amplify';
+import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import axios from '../../generalAxiosConfig';
+import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
+import { AllSkills, MatchingVolunteers, Skill, Status, Volunteer } from '../../utils/types';
+import VolunteersTable from '../../Components/VolunteersTable/VolunteersTable';
 
-interface Skill {
-    id: number,
-    name: string
-}
-interface AllSkills extends StatusCodesResponse {
-    skills: Skill[]
-}
-
-enum Status {
-    NOT_PROCESSED = 0,
-    AUTHORIZED = 1,
-    SUSPICIOUS = 2,
-    MESSAGE_SENT = 3
-}
-
-const hebrewStatusesMap = {
-    [Status.NOT_PROCESSED]: "לא מעובד",
-    [Status.AUTHORIZED]: "מאושר",
-    [Status.SUSPICIOUS]: "חשוד",
-    [Status.MESSAGE_SENT]: "הודעה נשלחה",
-}
-
-interface Volunteer {
-    id: number,
-    name: string,
-    job_title: string,
-    can_help_with: string,
-    whatsapp_num: string,
-    email: string,
-    linkedin_profile: string,
-    comments: string,
-    status: Status,
-    is_student: boolean
-}
-
-interface MatchingVolunteers extends StatusCodesResponse {
-    volunteers: Volunteer[]
-}
 
 const mapSelection = {
     NoPreference: null,
     Selected: true,
     NonSelected: false
 }
-
-const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Name', width: 130 },
-    { field: 'job_title', headerName: 'Job Title', width: 400 },
-    { field: 'can_help_with', headerName: 'Can Help With', width: 300 },
-    { field: 'whatsapp_num', headerName: 'Phone Number', width: 130 },
-    { field: 'email', headerName: 'Email', width: 200 },
-    { field: 'linkedin_profile', headerName: 'Linkedin Profile', width: 200 },
-    { field: 'comments', headerName: 'Comments', width: 130 },
-    {
-        field: 'status', headerName: 'Status', width: 130, valueGetter: (params: GridValueGetterParams) =>
-            hebrewStatusesMap[params.row.status as keyof typeof hebrewStatusesMap]
-    },
-    { field: 'is_student', headerName: 'Is Student', width: 130, valueGetter: (params: GridValueGetterParams) =>
-    params.row.is_student ? 'כן' : 'לא' }
-];
-
 
 const Home = () => { // ! if enters without auth kick him out
     const [allSkills, setAllSkills] = useState<Skill[]>([]);
@@ -89,6 +35,7 @@ const Home = () => { // ! if enters without auth kick him out
 
     const fetchAllSkills = async () => {
         try {
+
             const userInfo = await Auth.currentUserInfo();
 
             const { data } = await axios.post<AllSkills>('/get_all_skills', {
@@ -246,26 +193,14 @@ const Home = () => { // ! if enters without auth kick him out
 
                     </div>
 
-                    <Button style={{ height: 'fit-content', marginLeft: '15px' }} variant="outlined" onClick={searchVolunteers}>Search</Button>
+                    <Button style={{ height: 'fit-content', marginLeft: '15px' }} variant="outlined"
+                        onClick={searchVolunteers}>Search</Button>
 
                 </div>
-                {isLoading ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading... </div>
-                    : (volunteers.length > 0 && <div>
-
-                        <DataGrid
-                            rows={volunteers}
-                            columns={columns}
-                            initialState={{
-                                pagination: {
-                                    paginationModel: { page: 0, pageSize: 5 },
-                                },
-                            }}
-                            rowSelection={false}
-                            pageSizeOptions={[5, 10, 25]}
-                        />
-
-
-                    </div>)}
+                {isLoading ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <CircularProgress size={24} color="inherit" />
+                </div>
+                    : <VolunteersTable volunteers={volunteers} />}
             </div>
 
 

@@ -6,12 +6,15 @@ import axios from '../../authAxiosConfig';
 import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { CircularProgress, Typography } from '@mui/material';
+import PasswordTextField from '../../Components/PasswordTextField/PasswordTextField';
 
 
 const Signup = () => { // ! loader
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -19,11 +22,13 @@ const Signup = () => { // ! loader
         setEmail(e.target.value);
     };
 
-    const handlePassswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setPassword(e.target.value);
+    const handlePassswordChange = (value: string) => {
+        setPassword(value);
     };
 
     const createAccount = async () => {
+        setIsLoading(true);
+
         try {
             const { data: checkBeforeSignupData } = await axios.post<StatusCodesResponse>('/check_before_sign_up', {
                 email,
@@ -54,10 +59,10 @@ const Signup = () => { // ! loader
                 position: 'top-right',
                 autoClose: 3000
             });
+        } finally{
+            setIsLoading(false);
         }
     };
-
-    console.log(email)
 
     return (
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
@@ -74,20 +79,17 @@ const Signup = () => { // ! loader
                     label="Email"
                     variant="outlined" />
 
-                <TextField
-                    style={{ marginTop: '10px' }}
-                    type="text"
-                    id="password"
-                    name="password"
-                    value={password}
-                    onChange={handlePassswordChange}
-                    label="Password"
-                    variant="outlined" />
+                <div style={{ marginTop: '10px' }}>
+                    <PasswordTextField onChange={handlePassswordChange} password={password} />
+                </div>
 
                 <Button
                     style={{ marginTop: '13px' }}
                     onClick={createAccount}
-                    variant="contained">Create Account</Button>
+                    variant="contained">{isLoading ? <CircularProgress size={24} color="inherit" /> : `Create Account`}</Button>
+
+                <Typography style={{ textAlign: 'center', marginTop: '12px' }}>Already have a user?</Typography>
+                <Button onClick={() => navigate('/login')}>Click here to sign in</Button>
 
             </div>
         </div>
