@@ -35,7 +35,7 @@ const columns: GridColDef[] = [
 const VolunteersTable = ({ volunteers }: Props) => {
     
 
-    return (volunteers.length > 0 ? <div>
+    return (volunteers?.length > 0 ? <div>
 
         <DataGrid
             rows={volunteers}
