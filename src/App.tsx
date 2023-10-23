@@ -44,6 +44,8 @@ function App() {
     Hub.listen('auth', hubObj, 'onHubCapsule');
   }, []);
 
+  console.log('update')
+
   return (
 
     <HashRouter>
