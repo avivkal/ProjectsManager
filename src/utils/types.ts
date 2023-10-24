@@ -1,4 +1,4 @@
-import { StatusCodesResponse } from "./statusCodes";
+import { StatusCodesResponse } from './statusCodes';
 
 export interface Skill {
   id: number;
@@ -27,8 +27,8 @@ export interface Volunteer {
   status: Status;
   is_student: boolean;
   skills: Skill[];
-  timestamp: string;
-  authorized_text: string;
+  timestamp?: string;
+  authorized_text?: string;
 }
 
 export interface MatchingVolunteers extends StatusCodesResponse {
