@@ -22,7 +22,7 @@ export function SkyblueToggle({
                     <div
                         key={option.title}
                         className={cn(
-                            'p-4 rounded-full flex-1 text-center',
+                            'rounded-full flex-1 text-center',
                             value === option.value &&
                                 'text-blue-600 bg-gradient-to-r from-[#00F3EE] to-[#06B8FD]'
                         )}
@@ -38,7 +38,10 @@ export function SkyblueToggle({
                                 onChange(e.currentTarget.value === 'true')
                             }
                         />
-                        <label htmlFor={valueAsString}>
+                        <label
+                            className="block h-full p-4"
+                            htmlFor={valueAsString}
+                        >
                             <div>{option.title}</div>
                         </label>
                     </div>
