@@ -3,7 +3,7 @@ import { Auth } from 'aws-amplify';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import ReactCodeInput from 'react-verification-code-input';
+// import ReactCodeInput from 'react-verification-code-input';
 import axios from '../../authAxiosConfig';
 import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
 
@@ -30,7 +30,7 @@ const ConfirmSignup = () => {
 
             const { data } = await axios.post<StatusCodesResponse>('/sign_up', {
                 email,
-                user_type: 'manager'
+                user_type: 'manager',
             });
 
             if (errorStatusCodes[data.status]) {
@@ -38,45 +38,58 @@ const ConfirmSignup = () => {
             }
 
             navigate('/login');
-
         } catch (error: any) {
             toast.error(error?.message, {
                 position: 'top-right',
-                autoClose: 3000
+                autoClose: 3000,
             });
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
     const resendCode = async () => {
         await Auth.resendSignUp(email);
-    }
+    };
 
-    const isVerifyButtonDisabled = verificationCode.length !== VALID_VERIFICATION_CODE_LENGTH || isLoading;
+    const isVerifyButtonDisabled =
+        verificationCode.length !== VALID_VERIFICATION_CODE_LENGTH || isLoading;
 
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            marginTop: '30px'
-        }}>
-            <h2 style={{ color: '#897d7d', fontWeight: 400 }}>Verification Code</h2>
-            <ReactCodeInput
+        <div
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                marginTop: '30px',
+            }}
+        >
+            <h2 style={{ color: '#897d7d', fontWeight: 400 }}>
+                Verification Code
+            </h2>
+            {/* <ReactCodeInput
                 loading={isLoading}
                 onChange={handleVerificationCodeChange}
-            />
+            /> */}
 
-            <Button onClick={resendCode} style={{ marginTop: '5px' }} variant="text">Resend code</Button>
+            <Button
+                onClick={resendCode}
+                style={{ marginTop: '5px' }}
+                variant="text"
+            >
+                Resend code
+            </Button>
 
             <Button
                 style={{ marginTop: '13px' }}
-                disabled={isVerifyButtonDisabled} onClick={verifyCode}
-                variant="contained">Verify</Button>
-
+                disabled={isVerifyButtonDisabled}
+                onClick={verifyCode}
+                variant="contained"
+            >
+                Verify
+            </Button>
         </div>
     );
-}
+};
 
 export default ConfirmSignup;
