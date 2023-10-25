@@ -4,11 +4,10 @@ import TextField from '@mui/material/TextField';
 import { Auth } from 'aws-amplify';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import VolunteersTable from '../../Components/VolunteersTable/VolunteersTable';
+import { VolunteersTable } from '../../Components/VolunteersTable/VolunteersTable';
 import axios from '../../generalAxiosConfig';
 import { errorStatusCodes } from '../../utils/statusCodes';
 import { MatchingVolunteers, Volunteer } from '../../utils/types';
-
 
 const FindVolunteers = () => {
     const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
@@ -19,7 +18,6 @@ const FindVolunteers = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const searchVolunteers = async () => {
-
         // if(!name || !email || !phoneNumber) {
         //     toast.error('Missing parameters', {
         //         position: 'top-right',
@@ -32,13 +30,16 @@ const FindVolunteers = () => {
         try {
             const userInfo = await Auth.currentUserInfo();
 
-            const { data } = await axios.post<MatchingVolunteers>('/find_volunteers', {
-                email: userInfo.username,
-                user_type: 'manager',
-                name: name,
-                phone_number: phoneNumber,
-                v_email: email
-            });
+            const { data } = await axios.post<MatchingVolunteers>(
+                '/find_volunteers',
+                {
+                    email: userInfo.username,
+                    user_type: 'manager',
+                    name: name,
+                    phone_number: phoneNumber,
+                    v_email: email,
+                }
+            );
 
             if (errorStatusCodes[data.status]) {
                 throw new Error(errorStatusCodes[data.status]);
@@ -48,19 +49,28 @@ const FindVolunteers = () => {
         } catch (error: any) {
             toast.error(error?.message, {
                 position: 'top-right',
-                autoClose: 3000
+                autoClose: 3000,
             });
         } finally {
             setIsLoading(false);
         }
-    }
-
-
+    };
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
-
-            <div style={{ display: 'flex', marginTop: '15px', alignItems: 'center' }}>
+        <div
+            style={{
+                display: 'flex',
+                alignItems: 'center',
+                flexDirection: 'column',
+            }}
+        >
+            <div
+                style={{
+                    display: 'flex',
+                    marginTop: '15px',
+                    alignItems: 'center',
+                }}
+            >
                 <TextField
                     id="email"
                     label="Email"
@@ -92,19 +102,31 @@ const FindVolunteers = () => {
                     }}
                 />
 
-                <Button style={{ height: 'fit-content', marginLeft: '15px' }} variant="outlined"
-                    onClick={searchVolunteers}>Search</Button>
-
-
+                <Button
+                    style={{ height: 'fit-content', marginLeft: '15px' }}
+                    variant="outlined"
+                    onClick={searchVolunteers}
+                >
+                    Search
+                </Button>
             </div>
 
-
-            {isLoading ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '20px' }}>
-                <CircularProgress size={24} color="inherit" />
-            </div>
-                : <VolunteersTable volunteers={volunteers} />}
+            {isLoading ? (
+                <div
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginTop: '20px',
+                    }}
+                >
+                    <CircularProgress size={24} color="inherit" />
+                </div>
+            ) : (
+                <VolunteersTable volunteers={volunteers} />
+            )}
         </div>
     );
-}
+};
 
 export default FindVolunteers;

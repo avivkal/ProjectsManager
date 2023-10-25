@@ -14,7 +14,7 @@ import {
 import { Auth } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import VolunteersTable from '../../Components/VolunteersTable/VolunteersTable';
+import { VolunteersTable } from '../../Components/VolunteersTable/VolunteersTable';
 import axios from '../../generalAxiosConfig';
 import { errorStatusCodes } from '../../utils/statusCodes';
 import {
@@ -23,29 +23,12 @@ import {
     Skill,
     Volunteer,
 } from '../../utils/types';
-import { ColumnDef } from '@tanstack/react-table';
-import { DataTable } from '../../Components/common/DataTable/DataTable';
 
 const mapSelection = {
     NoPreference: null,
     Selected: true,
     NonSelected: false,
 };
-
-const columns: ColumnDef<Volunteer>[] = [
-    {
-        accessorKey: 'name',
-        header: 'שם',
-    },
-    {
-        accessorKey: 'whatsapp_num',
-        header: 'טלפון',
-    },
-    {
-        accessorKey: 'email',
-        header: 'אימייל',
-    },
-];
 
 const Home = () => {
     // ! if enters without auth kick him out
@@ -279,7 +262,7 @@ const Home = () => {
                         <CircularProgress size={24} color="inherit" />
                     </div>
                 ) : (
-                    <DataTable columns={columns} data={volunteers} />
+                    <VolunteersTable volunteers={volunteers} />
                 )}
             </div>
         </div>
