@@ -57,7 +57,7 @@ function App() {
 
                 {authenticated ? (
                     protectedRoutes.map(({ route, element }) => (
-                        <Route path={route} element={element} />
+                        <Route key={route} path={route} element={element} />
                     ))
                 ) : (
                     <Route

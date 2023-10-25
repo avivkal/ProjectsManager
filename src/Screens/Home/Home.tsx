@@ -23,6 +23,7 @@ import {
     Skill,
     Volunteer,
 } from '../../utils/types';
+import { FiltersBox } from '../../Components/FiltersBox/FilterBox';
 
 const mapSelection = {
     NoPreference: null,
@@ -30,11 +31,12 @@ const mapSelection = {
     NonSelected: false,
 };
 
+type ActiveFiltersMap = Record<'verified', boolean>;
+
 const Home = () => {
     // ! if enters without auth kick him out
     const [allSkills, setAllSkills] = useState<Skill[]>([]);
     const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
-
     const [skillSets, setSkillSets] = useState<Skill[]>([]);
     const [keyword, setKeyword] = useState<string>('');
     const [isWorkingOnProject, setIsWorkingOnProject] =
@@ -43,6 +45,10 @@ const Home = () => {
         useState<keyof typeof mapSelection>('NoPreference');
     const [isVerified, setIsVerified] =
         useState<keyof typeof mapSelection>('NoPreference');
+    const [activeFiltersMap, setActiveFiltersMap] = useState<ActiveFiltersMap>(
+        {} as ActiveFiltersMap
+    );
+    const [isVerifiedV2, setIsVerifiedV2] = useState<boolean>(true);
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -250,6 +256,30 @@ const Home = () => {
                     >
                         Search
                     </Button>
+                </div>
+                <div className="flex justify-center content-center">
+                    <FiltersBox
+                        filters={[
+                            {
+                                type: 'verified',
+                                title: 'מאומת',
+                                isActive: Boolean(activeFiltersMap['verified']),
+                                isVerified: isVerifiedV2,
+                                setIsVerified: setIsVerifiedV2,
+                                onOpenChange: (open: boolean) => {
+                                    if (open && !activeFiltersMap['verified']) {
+                                        setActiveFiltersMap((prevMap) => ({
+                                            ...prevMap,
+                                            verified: true,
+                                        }));
+                                    }
+                                },
+                            },
+                        ]}
+                        cleanFilters={() =>
+                            setActiveFiltersMap({} as ActiveFiltersMap)
+                        }
+                    />
                 </div>
                 {isLoading ? (
                     <div
