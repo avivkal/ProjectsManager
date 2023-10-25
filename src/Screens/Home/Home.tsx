@@ -1,30 +1,65 @@
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
-import { Autocomplete, Button, Checkbox, CircularProgress, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
+import {
+    Autocomplete,
+    Button,
+    Checkbox,
+    CircularProgress,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    TextField,
+} from '@mui/material';
 import { Auth } from 'aws-amplify';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import VolunteersTable from '../../Components/VolunteersTable/VolunteersTable';
 import axios from '../../generalAxiosConfig';
 import { errorStatusCodes } from '../../utils/statusCodes';
-import { AllSkills, MatchingVolunteers, Skill, Volunteer } from '../../utils/types';
-
+import {
+    AllSkills,
+    MatchingVolunteers,
+    Skill,
+    Volunteer,
+} from '../../utils/types';
+import { ColumnDef } from '@tanstack/react-table';
+import { DataTable } from '../../Components/common/DataTable/DataTable';
 
 const mapSelection = {
     NoPreference: null,
     Selected: true,
-    NonSelected: false
-}
+    NonSelected: false,
+};
 
-const Home = () => { // ! if enters without auth kick him out
+const columns: ColumnDef<Volunteer>[] = [
+    {
+        accessorKey: 'name',
+        header: 'שם',
+    },
+    {
+        accessorKey: 'whatsapp_num',
+        header: 'טלפון',
+    },
+    {
+        accessorKey: 'email',
+        header: 'אימייל',
+    },
+];
+
+const Home = () => {
+    // ! if enters without auth kick him out
     const [allSkills, setAllSkills] = useState<Skill[]>([]);
     const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
 
     const [skillSets, setSkillSets] = useState<Skill[]>([]);
     const [keyword, setKeyword] = useState<string>('');
-    const [isWorkingOnProject, setIsWorkingOnProject] = useState<keyof typeof mapSelection>('NoPreference');
-    const [isStudent, setIsStudent] = useState<keyof typeof mapSelection>('NoPreference');
-    const [isVerified, setIsVerified] = useState<keyof typeof mapSelection>('NoPreference');
+    const [isWorkingOnProject, setIsWorkingOnProject] =
+        useState<keyof typeof mapSelection>('NoPreference');
+    const [isStudent, setIsStudent] =
+        useState<keyof typeof mapSelection>('NoPreference');
+    const [isVerified, setIsVerified] =
+        useState<keyof typeof mapSelection>('NoPreference');
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -34,12 +69,11 @@ const Home = () => { // ! if enters without auth kick him out
 
     const fetchAllSkills = async () => {
         try {
-
             const userInfo = await Auth.currentUserInfo();
 
             const { data } = await axios.post<AllSkills>('/get_all_skills', {
                 email: userInfo.username,
-                user_type: 'manager'
+                user_type: 'manager',
             });
 
             if (errorStatusCodes[data.status]) {
@@ -50,10 +84,10 @@ const Home = () => { // ! if enters without auth kick him out
         } catch (error: any) {
             toast.error(error?.message, {
                 position: 'top-right',
-                autoClose: 3000
+                autoClose: 3000,
             });
         }
-    }
+    };
 
     const searchVolunteers = async () => {
         setIsLoading(true);
@@ -61,15 +95,18 @@ const Home = () => { // ! if enters without auth kick him out
             const userInfo = await Auth.currentUserInfo();
 
             // ! should i remove nulls from sending at all
-            const { data } = await axios.post<MatchingVolunteers>('/get_matching_volunteers', {
-                email: userInfo.username,
-                user_type: 'manager',
-                skill_sets: skillSets.map(current => current.id),
-                keywords: keyword,
-                is_working_on_project: mapSelection[isWorkingOnProject],
-                is_student: mapSelection[isStudent],
-                is_verified: mapSelection[isVerified]
-            });
+            const { data } = await axios.post<MatchingVolunteers>(
+                '/get_matching_volunteers',
+                {
+                    email: userInfo.username,
+                    user_type: 'manager',
+                    skill_sets: skillSets.map((current) => current.id),
+                    keywords: keyword,
+                    is_working_on_project: mapSelection[isWorkingOnProject],
+                    is_student: mapSelection[isStudent],
+                    is_verified: mapSelection[isVerified],
+                }
+            );
 
             if (errorStatusCodes[data.status]) {
                 throw new Error(errorStatusCodes[data.status]);
@@ -79,12 +116,12 @@ const Home = () => { // ! if enters without auth kick him out
         } catch (error: any) {
             toast.error(error?.message, {
                 position: 'top-right',
-                autoClose: 3000
+                autoClose: 3000,
             });
         } finally {
             setIsLoading(false);
         }
-    }
+    };
 
     const handleStudentChange = (event: SelectChangeEvent) => {
         setIsStudent(event.target.value as keyof typeof mapSelection);
@@ -100,10 +137,18 @@ const Home = () => { // ! if enters without auth kick him out
 
     return (
         <div style={{ marginTop: '15px' }}>
-            <h2 style={{ margin: 'auto', textAlign: 'center', color: '#897d7d', fontWeight: 400 }}>Search Volunteers</h2>
+            <h2
+                style={{
+                    margin: 'auto',
+                    textAlign: 'center',
+                    color: '#897d7d',
+                    fontWeight: 400,
+                }}
+            >
+                Search Volunteers
+            </h2>
 
             <div style={{ margin: '30px' }}>
-
                 <div>
                     <Autocomplete
                         multiple
@@ -118,10 +163,18 @@ const Home = () => { // ! if enters without auth kick him out
                         renderOption={(props, option, { selected }) => (
                             <li {...props}>
                                 <Checkbox
-                                    icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-                                    checkedIcon={<CheckBoxIcon fontSize="small" />}
+                                    icon={
+                                        <CheckBoxOutlineBlankIcon fontSize="small" />
+                                    }
+                                    checkedIcon={
+                                        <CheckBoxIcon fontSize="small" />
+                                    }
                                     style={{ marginRight: 8 }}
-                                    checked={!!skillSets.find(curr => curr.id === option.id)}
+                                    checked={
+                                        !!skillSets.find(
+                                            (curr) => curr.id === option.id
+                                        )
+                                    }
                                 />
                                 {option.name}
                             </li>
@@ -131,21 +184,32 @@ const Home = () => { // ! if enters without auth kick him out
                             <TextField {...params} label="Skills" />
                         )}
                     />
-
-
                 </div>
-                <div style={{ display: 'flex', marginTop: '10px', marginBottom: '15px', alignItems: 'center' }}>
+                <div
+                    style={{
+                        display: 'flex',
+                        marginTop: '10px',
+                        marginBottom: '15px',
+                        alignItems: 'center',
+                    }}
+                >
                     <div>
-                        <InputLabel id="isWorkingOnProject">Work Status</InputLabel>
+                        <InputLabel id="isWorkingOnProject">
+                            Work Status
+                        </InputLabel>
                         <Select
                             labelId="isWorkingOnProject"
                             id="isWorkingOnProject"
                             value={isWorkingOnProject}
                             onChange={handleIsWorkingOnProjectChange}
                         >
-                            <MenuItem value={'NoPreference'}>No Preference</MenuItem>
+                            <MenuItem value={'NoPreference'}>
+                                No Preference
+                            </MenuItem>
                             <MenuItem value={'Selected'}>Working</MenuItem>
-                            <MenuItem value={'NonSelected'}>Not Working</MenuItem>
+                            <MenuItem value={'NonSelected'}>
+                                Not Working
+                            </MenuItem>
                         </Select>
                     </div>
 
@@ -157,11 +221,12 @@ const Home = () => { // ! if enters without auth kick him out
                             value={isStudent}
                             onChange={handleStudentChange}
                         >
-                            <MenuItem value={'NoPreference'}>No Preference</MenuItem>
+                            <MenuItem value={'NoPreference'}>
+                                No Preference
+                            </MenuItem>
                             <MenuItem value={'Selected'}>Yes</MenuItem>
                             <MenuItem value={'NonSelected'}>No</MenuItem>
                         </Select>
-
                     </div>
 
                     <div style={{ marginLeft: '15px' }}>
@@ -172,7 +237,9 @@ const Home = () => { // ! if enters without auth kick him out
                             value={isVerified}
                             onChange={handleIsVerifiedChange}
                         >
-                            <MenuItem value={'NoPreference'}>No Preference</MenuItem>
+                            <MenuItem value={'NoPreference'}>
+                                No Preference
+                            </MenuItem>
                             <MenuItem value={'Selected'}>Yes</MenuItem>
                             <MenuItem value={'NonSelected'}>No</MenuItem>
                         </Select>
@@ -185,27 +252,38 @@ const Home = () => { // ! if enters without auth kick him out
                             variant="standard"
                             style={{ height: 'fit-content' }}
                             value={keyword}
-                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                            onChange={(
+                                event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
                                 setKeyword(event.target.value);
                             }}
                         />
-
                     </div>
 
-                    <Button style={{ height: 'fit-content', marginLeft: '15px' }} variant="outlined"
-                        onClick={searchVolunteers}>Search</Button>
-
+                    <Button
+                        style={{ height: 'fit-content', marginLeft: '15px' }}
+                        variant="outlined"
+                        onClick={searchVolunteers}
+                    >
+                        Search
+                    </Button>
                 </div>
-                {isLoading ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CircularProgress size={24} color="inherit" />
-                </div>
-                    : <VolunteersTable volunteers={volunteers} />}
+                {isLoading ? (
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <CircularProgress size={24} color="inherit" />
+                    </div>
+                ) : (
+                    <DataTable columns={columns} data={volunteers} />
+                )}
             </div>
-
-
-
         </div>
     );
-}
+};
 
 export default Home;

@@ -91,7 +91,7 @@ const TableCell = React.forwardRef<
         ref={ref}
         className={cn(
             'p-4 align-middle text-center [&:has([role=checkbox])]:pr-0',
-            'border-y border-[#868686] first:border-l last:border-r first:rounded-l-xl last:rounded-r-xl',
+            'border-y border-[#868686] first:border-s last:border-e first:rounded-s-xl last:rounded-e-xl',
             className
         )}
         {...props}
