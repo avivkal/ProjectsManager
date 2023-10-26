@@ -51,7 +51,6 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/confirmSignup" element={<ConfirmSignup />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/home" element={<Home />} />
 
                 {authenticated ? (
                     protectedRoutes.map(({ route, element }) => (

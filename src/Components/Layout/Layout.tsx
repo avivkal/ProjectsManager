@@ -2,7 +2,7 @@ import { Link, Outlet } from 'react-router-dom';
 
 export function Layout() {
     return (
-        <div>
+        <>
             <header
                 className="relative top-0 pt-4 w-full min-h-[300px]"
                 style={{
@@ -41,6 +41,6 @@ export function Layout() {
             </header>
 
             <Outlet />
-        </div>
+        </>
     );
 }

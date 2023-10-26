@@ -103,8 +103,6 @@ code {
     font-family: inherit !important;
 }
 
-.super-row {
-    border: 1px solid #868686;
-    border-radius: 10px;
-    padding: 25px 0;
+.MuiChip-root {
+    direction: ltr;
 }
