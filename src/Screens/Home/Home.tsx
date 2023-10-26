@@ -44,11 +44,6 @@ const Home = () => {
         useState<keyof typeof mapSelection>('NoPreference');
     const [isVerified, setIsVerified] =
         useState<keyof typeof mapSelection>('NoPreference');
-    const [activeFiltersMap, setActiveFiltersMap] = useState<ActiveFiltersMap>(
-        {} as ActiveFiltersMap
-    );
-    const [isVerifiedV2, setIsVerifiedV2] = useState<boolean>(true);
-
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
