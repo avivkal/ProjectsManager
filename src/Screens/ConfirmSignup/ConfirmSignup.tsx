@@ -3,7 +3,7 @@ import { Auth } from 'aws-amplify';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-// import ReactCodeInput from 'react-verification-code-input';
+import VerificationInput from 'react-verification-input';
 import axios from '../../authAxiosConfig';
 import { StatusCodesResponse, errorStatusCodes } from '../../utils/statusCodes';
 
@@ -67,10 +67,7 @@ const ConfirmSignup = () => {
             <h2 style={{ color: '#897d7d', fontWeight: 400 }}>
                 Verification Code
             </h2>
-            {/* <ReactCodeInput
-                loading={isLoading}
-                onChange={handleVerificationCodeChange}
-            /> */}
+            <VerificationInput onChange={handleVerificationCodeChange} />
 
             <Button
                 onClick={resendCode}
@@ -86,7 +83,7 @@ const ConfirmSignup = () => {
                 onClick={verifyCode}
                 variant="contained"
             >
-                Verify
+                {isLoading ? 'Loading...' : 'Verify'}
             </Button>
         </div>
     );

@@ -3,7 +3,6 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import {
     Autocomplete,
     Checkbox,
-    CircularProgress,
     MenuItem,
     Select,
     SelectChangeEvent,
