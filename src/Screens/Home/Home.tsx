@@ -125,176 +125,157 @@ const Home = () => {
     };
 
     return (
-        <div style={{ marginTop: '15px' }}>
-            <h2
+        <div style={{ margin: '50px 30px' }}>
+            <div>
+                <Autocomplete
+                    multiple
+                    value={skillSets}
+                    onChange={(_event, newValue) => {
+                        setSkillSets(newValue);
+                    }}
+                    id="skills"
+                    options={allSkills}
+                    disableCloseOnSelect
+                    getOptionLabel={(option) => option.name}
+                    renderOption={(props, option, { selected }) => (
+                        <li {...props}>
+                            <Checkbox
+                                icon={
+                                    <CheckBoxOutlineBlankIcon fontSize="small" />
+                                }
+                                checkedIcon={<CheckBoxIcon fontSize="small" />}
+                                style={{ marginRight: 8 }}
+                                checked={
+                                    !!skillSets.find(
+                                        (curr) => curr.id === option.id
+                                    )
+                                }
+                            />
+                            {option.name}
+                        </li>
+                    )}
+                    style={{ width: 800 }}
+                    renderInput={(params) => (
+                        <TextField {...params} label="Skills" />
+                    )}
+                />
+            </div>
+            <div
                 style={{
-                    margin: 'auto',
-                    textAlign: 'center',
-                    color: '#897d7d',
-                    fontWeight: 400,
+                    display: 'flex',
+                    marginTop: '10px',
+                    marginBottom: '15px',
+                    alignItems: 'center',
                 }}
             >
-                Search Volunteers
-            </h2>
-
-            <div style={{ margin: '30px' }}>
                 <div>
-                    <Autocomplete
-                        multiple
-                        value={skillSets}
-                        onChange={(_event, newValue) => {
-                            setSkillSets(newValue);
+                    <InputLabel id="isWorkingOnProject">Work Status</InputLabel>
+                    <Select
+                        labelId="isWorkingOnProject"
+                        id="isWorkingOnProject"
+                        value={isWorkingOnProject}
+                        onChange={handleIsWorkingOnProjectChange}
+                    >
+                        <MenuItem value={'NoPreference'}>
+                            No Preference
+                        </MenuItem>
+                        <MenuItem value={'Selected'}>Working</MenuItem>
+                        <MenuItem value={'NonSelected'}>Not Working</MenuItem>
+                    </Select>
+                </div>
+
+                <div style={{ marginLeft: '15px' }}>
+                    <InputLabel id="isStudent">Student</InputLabel>
+                    <Select
+                        labelId="isStudent"
+                        id="isStudent"
+                        value={isStudent}
+                        onChange={handleStudentChange}
+                    >
+                        <MenuItem value={'NoPreference'}>
+                            No Preference
+                        </MenuItem>
+                        <MenuItem value={'Selected'}>Yes</MenuItem>
+                        <MenuItem value={'NonSelected'}>No</MenuItem>
+                    </Select>
+                </div>
+
+                <div style={{ marginLeft: '15px' }}>
+                    <InputLabel id="isVerified">Verified</InputLabel>
+                    <Select
+                        labelId="isVerified"
+                        id="isVerified"
+                        value={isVerified}
+                        onChange={handleIsVerifiedChange}
+                    >
+                        <MenuItem value={'NoPreference'}>
+                            No Preference
+                        </MenuItem>
+                        <MenuItem value={'Selected'}>Yes</MenuItem>
+                        <MenuItem value={'NonSelected'}>No</MenuItem>
+                    </Select>
+                </div>
+
+                <div style={{ marginLeft: '15px' }}>
+                    <TextField
+                        id="keyword"
+                        label="Keywords"
+                        variant="standard"
+                        style={{ height: 'fit-content' }}
+                        value={keyword}
+                        onChange={(
+                            event: React.ChangeEvent<HTMLInputElement>
+                        ) => {
+                            setKeyword(event.target.value);
                         }}
-                        id="skills"
-                        options={allSkills}
-                        disableCloseOnSelect
-                        getOptionLabel={(option) => option.name}
-                        renderOption={(props, option, { selected }) => (
-                            <li {...props}>
-                                <Checkbox
-                                    icon={
-                                        <CheckBoxOutlineBlankIcon fontSize="small" />
-                                    }
-                                    checkedIcon={
-                                        <CheckBoxIcon fontSize="small" />
-                                    }
-                                    style={{ marginRight: 8 }}
-                                    checked={
-                                        !!skillSets.find(
-                                            (curr) => curr.id === option.id
-                                        )
-                                    }
-                                />
-                                {option.name}
-                            </li>
-                        )}
-                        style={{ width: 800 }}
-                        renderInput={(params) => (
-                            <TextField {...params} label="Skills" />
-                        )}
                     />
                 </div>
+
+                <Button
+                    style={{ height: 'fit-content', marginLeft: '15px' }}
+                    variant="outlined"
+                    onClick={searchVolunteers}
+                >
+                    Search
+                </Button>
+            </div>
+            <div className="flex justify-center content-center">
+                <FiltersBox
+                    filters={[
+                        {
+                            type: 'verified',
+                            title: 'מאומת',
+                            isActive: Boolean(activeFiltersMap['verified']),
+                            isVerified: isVerifiedV2,
+                            setIsVerified: setIsVerifiedV2,
+                            onOpenChange: (open: boolean) => {
+                                if (open && !activeFiltersMap['verified']) {
+                                    setActiveFiltersMap((prevMap) => ({
+                                        ...prevMap,
+                                        verified: true,
+                                    }));
+                                }
+                            },
+                        },
+                    ]}
+                    cleanFilters={() =>
+                        setActiveFiltersMap({} as ActiveFiltersMap)
+                    }
+                />
+            </div>
+            {isLoading ? (
                 <div
                     style={{
                         display: 'flex',
-                        marginTop: '10px',
-                        marginBottom: '15px',
                         alignItems: 'center',
+                        justifyContent: 'center',
                     }}
                 >
-                    <div>
-                        <InputLabel id="isWorkingOnProject">
-                            Work Status
-                        </InputLabel>
-                        <Select
-                            labelId="isWorkingOnProject"
-                            id="isWorkingOnProject"
-                            value={isWorkingOnProject}
-                            onChange={handleIsWorkingOnProjectChange}
-                        >
-                            <MenuItem value={'NoPreference'}>
-                                No Preference
-                            </MenuItem>
-                            <MenuItem value={'Selected'}>Working</MenuItem>
-                            <MenuItem value={'NonSelected'}>
-                                Not Working
-                            </MenuItem>
-                        </Select>
-                    </div>
-
-                    <div style={{ marginLeft: '15px' }}>
-                        <InputLabel id="isStudent">Student</InputLabel>
-                        <Select
-                            labelId="isStudent"
-                            id="isStudent"
-                            value={isStudent}
-                            onChange={handleStudentChange}
-                        >
-                            <MenuItem value={'NoPreference'}>
-                                No Preference
-                            </MenuItem>
-                            <MenuItem value={'Selected'}>Yes</MenuItem>
-                            <MenuItem value={'NonSelected'}>No</MenuItem>
-                        </Select>
-                    </div>
-
-                    <div style={{ marginLeft: '15px' }}>
-                        <InputLabel id="isVerified">Verified</InputLabel>
-                        <Select
-                            labelId="isVerified"
-                            id="isVerified"
-                            value={isVerified}
-                            onChange={handleIsVerifiedChange}
-                        >
-                            <MenuItem value={'NoPreference'}>
-                                No Preference
-                            </MenuItem>
-                            <MenuItem value={'Selected'}>Yes</MenuItem>
-                            <MenuItem value={'NonSelected'}>No</MenuItem>
-                        </Select>
-                    </div>
-
-                    <div style={{ marginLeft: '15px' }}>
-                        <TextField
-                            id="keyword"
-                            label="Keywords"
-                            variant="standard"
-                            style={{ height: 'fit-content' }}
-                            value={keyword}
-                            onChange={(
-                                event: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                                setKeyword(event.target.value);
-                            }}
-                        />
-                    </div>
-
-                    <Button
-                        style={{ height: 'fit-content', marginLeft: '15px' }}
-                        variant="outlined"
-                        onClick={searchVolunteers}
-                    >
-                        Search
-                    </Button>
+                    <CircularProgress size={24} color="inherit" />
                 </div>
-                <div className="flex justify-center content-center">
-                    <FiltersBox
-                        filters={[
-                            {
-                                type: 'verified',
-                                title: 'מאומת',
-                                isActive: Boolean(activeFiltersMap['verified']),
-                                isVerified: isVerifiedV2,
-                                setIsVerified: setIsVerifiedV2,
-                                onOpenChange: (open: boolean) => {
-                                    if (open && !activeFiltersMap['verified']) {
-                                        setActiveFiltersMap((prevMap) => ({
-                                            ...prevMap,
-                                            verified: true,
-                                        }));
-                                    }
-                                },
-                            },
-                        ]}
-                        cleanFilters={() =>
-                            setActiveFiltersMap({} as ActiveFiltersMap)
-                        }
-                    />
-                </div>
-                {isLoading ? (
-                    <div
-                        style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <CircularProgress size={24} color="inherit" />
-                    </div>
-                ) : (
-                    <VolunteersTable volunteers={volunteers} />
-                )}
-            </div>
+            ) : (
+                <VolunteersTable volunteers={volunteers} />
+            )}
         </div>
     );
 };

@@ -2,13 +2,13 @@ import { Amplify, Auth, Hub } from 'aws-amplify';
 import { useEffect, useState } from 'react';
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
-import NavigationBar from './Components/NavigationBar/NavigationBar';
 import ConfirmSignup from './Screens/ConfirmSignup/ConfirmSignup';
 import Login from './Screens/Login/Login';
 import Signup from './Screens/Signup/Signup';
 import awsconfig from './aws-exports';
 import { protectedRoutes } from './utils/routes';
 import Home from './Screens/Home/Home';
+import { Layout } from './Components/Layout/Layout';
 
 Amplify.configure(awsconfig);
 
@@ -47,8 +47,6 @@ function App() {
 
     return (
         <HashRouter>
-            <NavigationBar />
-
             <Routes>
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/confirmSignup" element={<ConfirmSignup />} />
@@ -57,7 +55,9 @@ function App() {
 
                 {authenticated ? (
                     protectedRoutes.map(({ route, element }) => (
-                        <Route key={route} path={route} element={element} />
+                        <Route key={route} element={<Layout />}>
+                            <Route path={route} element={element} />
+                        </Route>
                     ))
                 ) : (
                     <Route
