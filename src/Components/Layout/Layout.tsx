@@ -4,13 +4,13 @@ export function Layout() {
     return (
         <>
             <header
-                className="relative top-0 pt-4 w-full min-h-[300px]"
+                className="relative top-0 pt-4 w-full min-h-[250px]"
                 style={{
                     background:
                         'linear-gradient(118deg, #1C31D9 9.73%, #3219CA 37.53%, #2F19C5 37.54%, #111D88 58.94%, #041E6E 68.2%, #1E1676 102.35%)',
                 }}
             >
-                <div dir="rtl" className="flex justify-center gap-16">
+                <div dir="rtl" className="flex justify-center">
                     <nav>
                         <ul className="flex justify-center gap-4">
                             <li>
@@ -30,7 +30,7 @@ export function Layout() {
 
                     <div className="text-[#00F3DB] font-bold"></div>
                 </div>
-                <div className="flex justify-center w-full py-[7rem]">
+                <div className="flex justify-center w-full py-[5rem]">
                     <div className="text-white text-6xl font-bold">{`מתנדבים`}</div>
                 </div>
                 <img

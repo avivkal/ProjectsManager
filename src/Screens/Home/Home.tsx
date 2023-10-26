@@ -21,7 +21,7 @@ import {
     Volunteer,
 } from '../../utils/types';
 import { Button } from '../../Components/common/button';
-import { Loader2, Search } from 'lucide-react';
+import { Loader2, Minus, Plus, Search } from 'lucide-react';
 
 const mapSelection = {
     NoPreference: null,
@@ -44,6 +44,7 @@ const Home = () => {
     const [isVerified, setIsVerified] =
         useState<keyof typeof mapSelection>('NoPreference');
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isFiltersBoxOpen, setIsFiltersBoxOpen] = useState(true);
 
     useEffect(() => {
         fetchAllSkills();
@@ -119,111 +120,130 @@ const Home = () => {
 
     return (
         <div style={{ padding: '50px 30px' }}>
-            {/* Filters */}
-            <div dir="rtl">
-                <div className="grid grid-cols-[220px_200px] mb-8">
-                    <label>{`כישורים`}</label>
+            {isFiltersBoxOpen && (
+                <div dir="rtl">
+                    <div className="grid grid-cols-[90px_350px] mb-8">
+                        <label>{`כישורים`}</label>
 
-                    <Autocomplete
-                        multiple
-                        value={skillSets}
-                        onChange={(_event, newValue) => {
-                            setSkillSets(newValue);
-                        }}
-                        id="skills"
-                        options={allSkills}
-                        disableCloseOnSelect
-                        getOptionLabel={(option) => option.name}
-                        renderOption={(props, option, { selected }) => (
-                            <li {...props}>
-                                <Checkbox
-                                    icon={
-                                        <CheckBoxOutlineBlankIcon fontSize="small" />
-                                    }
-                                    checkedIcon={
-                                        <CheckBoxIcon fontSize="small" />
-                                    }
-                                    style={{ marginRight: 8 }}
-                                    checked={
-                                        !!skillSets.find(
-                                            (curr) => curr.id === option.id
-                                        )
-                                    }
-                                />
-                                {option.name}
-                            </li>
-                        )}
-                        style={{ width: 800 }}
-                        renderInput={(params) => (
-                            <TextField {...params} label="Skills" />
-                        )}
-                    />
+                        <Autocomplete
+                            multiple
+                            value={skillSets}
+                            onChange={(_event, newValue) => {
+                                setSkillSets(newValue);
+                            }}
+                            id="skills"
+                            options={allSkills}
+                            disableCloseOnSelect
+                            getOptionLabel={(option) => option.name}
+                            renderOption={(props, option, { selected }) => (
+                                <li {...props}>
+                                    <Checkbox
+                                        icon={
+                                            <CheckBoxOutlineBlankIcon fontSize="small" />
+                                        }
+                                        checkedIcon={
+                                            <CheckBoxIcon fontSize="small" />
+                                        }
+                                        style={{ marginRight: 8 }}
+                                        checked={
+                                            !!skillSets.find(
+                                                (curr) => curr.id === option.id
+                                            )
+                                        }
+                                    />
+                                    {option.name}
+                                </li>
+                            )}
+                            style={{ width: 350 }}
+                            renderInput={(params) => (
+                                <TextField {...params} label="Skills" />
+                            )}
+                        />
+                    </div>
+
+                    <div className="grid grid-flow-col auto-cols-fr gap-x-32">
+                        <div className="grid grid-flow-col grid-cols-[90px_350px] mb-8">
+                            <div className="flex flex-wrap content-center">
+                                <label>{`עבודה`}</label>
+                            </div>
+                            <Select
+                                id="isWorkingOnProject"
+                                value={isWorkingOnProject}
+                                onChange={handleIsWorkingOnProjectChange}
+                            >
+                                <MenuItem value={'NoPreference'}>
+                                    {`ללא העדפה`}
+                                </MenuItem>
+                                <MenuItem value={'Selected'}>{`עובד`}</MenuItem>
+                                <MenuItem
+                                    value={'NonSelected'}
+                                >{`לא עובד`}</MenuItem>
+                            </Select>
+                        </div>
+
+                        <div className="grid grid-flow-col grid-cols-[90px_350px] mb-8">
+                            <div className="flex flex-wrap content-center justify-center">
+                                <label>{`סטודנט`}</label>
+                            </div>
+                            <Select
+                                id="isStudent"
+                                value={isStudent}
+                                onChange={handleStudentChange}
+                            >
+                                <MenuItem value={'NoPreference'}>
+                                    {`ללא העדפה`}
+                                </MenuItem>
+                                <MenuItem
+                                    value={'Selected'}
+                                >{`סטודנט`}</MenuItem>
+                                <MenuItem
+                                    value={'NonSelected'}
+                                >{`לא סטודנט`}</MenuItem>
+                            </Select>
+                        </div>
+
+                        <div className="grid grid-flow-col grid-cols-[90px_350px] mb-8">
+                            <div className="flex flex-wrap content-center justify-center">
+                                <label>{`מאומת`}</label>
+                            </div>
+                            <Select
+                                labelId="isVerified"
+                                id="isVerified"
+                                value={isVerified}
+                                onChange={handleIsVerifiedChange}
+                            >
+                                <MenuItem value={'NoPreference'}>
+                                    {`ללא העדפה`}
+                                </MenuItem>
+                                <MenuItem
+                                    value={'Selected'}
+                                >{`מאומת`}</MenuItem>
+                                <MenuItem
+                                    value={'NonSelected'}
+                                >{`לא מאומת`}</MenuItem>
+                            </Select>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-[220px_200px] mb-8">
+                        <label>{`מילות חיפוש`}</label>
+                        <TextField
+                            id="keyword"
+                            label="Keywords"
+                            variant="standard"
+                            style={{ height: 'fit-content' }}
+                            value={keyword}
+                            onChange={(
+                                event: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                                setKeyword(event.target.value);
+                            }}
+                        />
+                    </div>
                 </div>
+            )}
 
-                <div className="grid grid-cols-[220px_200px] mb-8">
-                    <label>{`סטטוס עבודה`}</label>
-                    <Select
-                        id="isWorkingOnProject"
-                        value={isWorkingOnProject}
-                        onChange={handleIsWorkingOnProjectChange}
-                    >
-                        <MenuItem value={'NoPreference'}>
-                            {`ללא העדפה`}
-                        </MenuItem>
-                        <MenuItem value={'Selected'}>{`עובד`}</MenuItem>
-                        <MenuItem value={'NonSelected'}>{`לא עובד`}</MenuItem>
-                    </Select>
-                </div>
-
-                <div className="grid grid-cols-[220px_200px] mb-8">
-                    <label>{`סטודנט`}</label>
-                    <Select
-                        id="isStudent"
-                        value={isStudent}
-                        onChange={handleStudentChange}
-                    >
-                        <MenuItem value={'NoPreference'}>
-                            {`ללא העדפה`}
-                        </MenuItem>
-                        <MenuItem value={'Selected'}>{`סטודנט`}</MenuItem>
-                        <MenuItem value={'NonSelected'}>{`לא סטודנט`}</MenuItem>
-                    </Select>
-                </div>
-
-                <div className="grid grid-cols-[220px_200px] mb-8">
-                    <label>{`מאומת`}</label>
-                    <Select
-                        labelId="isVerified"
-                        id="isVerified"
-                        value={isVerified}
-                        onChange={handleIsVerifiedChange}
-                    >
-                        <MenuItem value={'NoPreference'}>
-                            {`ללא העדפה`}
-                        </MenuItem>
-                        <MenuItem value={'Selected'}>{`מאומת`}</MenuItem>
-                        <MenuItem value={'NonSelected'}>{`לא מאומת`}</MenuItem>
-                    </Select>
-                </div>
-
-                <div className="grid grid-cols-[220px_200px] mb-8">
-                    <label>{`מילות חיפוש`}</label>
-                    <TextField
-                        id="keyword"
-                        label="Keywords"
-                        variant="standard"
-                        style={{ height: 'fit-content' }}
-                        value={keyword}
-                        onChange={(
-                            event: React.ChangeEvent<HTMLInputElement>
-                        ) => {
-                            setKeyword(event.target.value);
-                        }}
-                    />
-                </div>
-            </div>
-
-            <div className="flex justify-center w-full my-4">
+            <div className="flex justify-center w-full my-4 gap-2">
                 <Button onClick={searchVolunteers} disabled={isLoading}>
                     {isLoading ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -231,6 +251,22 @@ const Home = () => {
                         <Search className="mr-2 h-4 w-4" />
                     )}
                     {`חיפוש`}
+                </Button>
+                <Button
+                    variant="secondary"
+                    onClick={() => setIsFiltersBoxOpen((prevOpen) => !prevOpen)}
+                >
+                    {isFiltersBoxOpen ? (
+                        <>
+                            <Minus className="mr-2 h-4 w-4" />
+                            {`סגור פילטרים`}
+                        </>
+                    ) : (
+                        <>
+                            <Plus className="mr-2 h-4 w-4" />
+                            {`פתח פילטרים`}
+                        </>
+                    )}
                 </Button>
             </div>
 
