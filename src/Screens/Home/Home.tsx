@@ -21,7 +21,8 @@ import {
     Volunteer,
 } from '../../utils/types';
 import { Button } from '../../Components/common/button';
-import { Loader2, Minus, Plus, Search } from 'lucide-react';
+import { Loader2, Search } from 'lucide-react';
+import { FiltersBox } from '../../Components/FiltersBox/FiltersBox';
 
 const mapSelection = {
     NoPreference: null,
@@ -29,7 +30,7 @@ const mapSelection = {
     NonSelected: false,
 };
 
-type ActiveFiltersMap = Record<'verified', boolean>;
+type ActiveFiltersMap = Record<'verified' | 'working' | 'skills', boolean>;
 
 const Home = () => {
     // ! if enters without auth kick him out
@@ -37,14 +38,16 @@ const Home = () => {
     const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
     const [skillSets, setSkillSets] = useState<Skill[]>([]);
     const [keyword, setKeyword] = useState<string>('');
-    const [isWorkingOnProject, setIsWorkingOnProject] =
-        useState<keyof typeof mapSelection>('NoPreference');
+    const [isWorkingOnProject, setIsWorkingOnProject] = useState(false);
     const [isStudent, setIsStudent] =
         useState<keyof typeof mapSelection>('NoPreference');
-    const [isVerified, setIsVerified] =
-        useState<keyof typeof mapSelection>('NoPreference');
+    const [isVerified, setIsVerified] = useState(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isFiltersBoxOpen, setIsFiltersBoxOpen] = useState(true);
+    const [activeFiltersMap, setActiveFiltersMap] = useState<ActiveFiltersMap>(
+        {} as ActiveFiltersMap
+    );
+
+    console.log({ activeFiltersMap });
 
     useEffect(() => {
         fetchAllSkills();
@@ -85,9 +88,13 @@ const Home = () => {
                     user_type: 'manager',
                     skill_sets: skillSets.map((current) => current.id),
                     keywords: keyword,
-                    is_working_on_project: mapSelection[isWorkingOnProject],
+                    is_working_on_project:
+                        mapSelection[
+                            isWorkingOnProject ? 'Selected' : 'NonSelected'
+                        ],
                     is_student: mapSelection[isStudent],
-                    is_verified: mapSelection[isVerified],
+                    is_verified:
+                        mapSelection[isVerified ? 'Selected' : 'NonSelected'],
                 }
             );
 
@@ -110,17 +117,17 @@ const Home = () => {
         setIsStudent(event.target.value as keyof typeof mapSelection);
     };
 
-    const handleIsWorkingOnProjectChange = (event: SelectChangeEvent) => {
-        setIsWorkingOnProject(event.target.value as keyof typeof mapSelection);
-    };
+    // const handleIsWorkingOnProjectChange = (event: SelectChangeEvent) => {
+    //     setIsWorkingOnProject(event.target.value as keyof typeof mapSelection);
+    // };
 
-    const handleIsVerifiedChange = (event: SelectChangeEvent) => {
-        setIsVerified(event.target.value as keyof typeof mapSelection);
-    };
+    // const handleIsVerifiedChange = (event: SelectChangeEvent) => {
+    //     setIsVerified(event.target.value as keyof typeof mapSelection);
+    // };
 
     return (
         <div style={{ padding: '50px 30px' }}>
-            {isFiltersBoxOpen && (
+            {false && (
                 <div dir="rtl">
                     <div className="grid grid-flow-col auto-cols-fr gap-x-32 mx-96">
                         <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
@@ -183,7 +190,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="grid grid-flow-col auto-cols-fr gap-x-32 mx-96">
-                        <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
+                        {/* <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
                             <div className="flex flex-wrap content-center">
                                 <label>{`עבודה`}</label>
                             </div>
@@ -200,9 +207,9 @@ const Home = () => {
                                     value={'NonSelected'}
                                 >{`לא עובד`}</MenuItem>
                             </Select>
-                        </div>
+                        </div> */}
 
-                        <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
+                        {/* <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
                             <div className="flex flex-wrap content-center">
                                 <label>{`מאומת`}</label>
                             </div>
@@ -222,10 +229,61 @@ const Home = () => {
                                     value={'NonSelected'}
                                 >{`לא מאומת`}</MenuItem>
                             </Select>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             )}
+
+            <FiltersBox
+                filters={[
+                    {
+                        type: 'YesNo',
+                        title: 'עבודה',
+                        isActive: Boolean(activeFiltersMap['working']),
+                        value: isWorkingOnProject,
+                        setValue: setIsWorkingOnProject,
+                        onOpenChange: (open: boolean) => {
+                            if (open && !activeFiltersMap['working']) {
+                                setActiveFiltersMap((prevMap) => ({
+                                    ...prevMap,
+                                    working: true,
+                                }));
+                            }
+                        },
+                    },
+                    {
+                        type: 'Skills',
+                        title: 'כישורים',
+                        isActive: Boolean(activeFiltersMap['skills']),
+                        value: skillSets,
+                        setValue: setSkillSets,
+                        allSkills: allSkills,
+                        onOpenChange: (open: boolean) => {
+                            if (open && !activeFiltersMap['skills']) {
+                                setActiveFiltersMap((prevMap) => ({
+                                    ...prevMap,
+                                    skills: true,
+                                }));
+                            }
+                        },
+                    },
+                    {
+                        type: 'YesNo',
+                        title: 'מאומת',
+                        isActive: Boolean(activeFiltersMap['verified']),
+                        value: isVerified,
+                        setValue: setIsVerified,
+                        onOpenChange: (open: boolean) => {
+                            if (open && !activeFiltersMap['verified']) {
+                                setActiveFiltersMap((prevMap) => ({
+                                    ...prevMap,
+                                    verified: true,
+                                }));
+                            }
+                        },
+                    },
+                ]}
+            />
 
             <div className="flex justify-center w-full my-4 gap-2">
                 <Button onClick={searchVolunteers} disabled={isLoading}>
@@ -235,22 +293,6 @@ const Home = () => {
                         <Search className="mr-2 h-4 w-4" />
                     )}
                     {`חיפוש`}
-                </Button>
-                <Button
-                    variant="secondary"
-                    onClick={() => setIsFiltersBoxOpen((prevOpen) => !prevOpen)}
-                >
-                    {isFiltersBoxOpen ? (
-                        <>
-                            <Minus className="mr-2 h-4 w-4" />
-                            {`סגור פילטרים`}
-                        </>
-                    ) : (
-                        <>
-                            <Plus className="mr-2 h-4 w-4" />
-                            {`פתח פילטרים`}
-                        </>
-                    )}
                 </Button>
             </div>
 
