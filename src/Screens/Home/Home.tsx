@@ -30,7 +30,10 @@ const mapSelection = {
     NonSelected: false,
 };
 
-type ActiveFiltersMap = Record<'verified' | 'working' | 'skills', boolean>;
+type ActiveFiltersMap = Record<
+    'verified' | 'working' | 'skills' | 'keyword',
+    boolean
+>;
 
 const Home = () => {
     // ! if enters without auth kick him out
@@ -38,16 +41,14 @@ const Home = () => {
     const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
     const [skillSets, setSkillSets] = useState<Skill[]>([]);
     const [keyword, setKeyword] = useState<string>('');
-    const [isWorkingOnProject, setIsWorkingOnProject] = useState(false);
-    const [isStudent, setIsStudent] =
-        useState<keyof typeof mapSelection>('NoPreference');
-    const [isVerified, setIsVerified] = useState(false);
+    const [isWorkingOnProject, setIsWorkingOnProject] = useState(true);
+    const [isVerified, setIsVerified] = useState(true);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [activeFiltersMap, setActiveFiltersMap] = useState<ActiveFiltersMap>(
         {} as ActiveFiltersMap
     );
 
-    console.log({ activeFiltersMap });
+    console.log({ skillSets });
 
     useEffect(() => {
         fetchAllSkills();
@@ -92,7 +93,6 @@ const Home = () => {
                         mapSelection[
                             isWorkingOnProject ? 'Selected' : 'NonSelected'
                         ],
-                    is_student: mapSelection[isStudent],
                     is_verified:
                         mapSelection[isVerified ? 'Selected' : 'NonSelected'],
                 }
@@ -113,177 +113,75 @@ const Home = () => {
         }
     };
 
-    const handleStudentChange = (event: SelectChangeEvent) => {
-        setIsStudent(event.target.value as keyof typeof mapSelection);
-    };
-
-    // const handleIsWorkingOnProjectChange = (event: SelectChangeEvent) => {
-    //     setIsWorkingOnProject(event.target.value as keyof typeof mapSelection);
-    // };
-
-    // const handleIsVerifiedChange = (event: SelectChangeEvent) => {
-    //     setIsVerified(event.target.value as keyof typeof mapSelection);
-    // };
-
     return (
         <div style={{ padding: '50px 30px' }}>
-            {false && (
-                <div dir="rtl">
-                    <div className="grid grid-flow-col auto-cols-fr gap-x-32 mx-96">
-                        <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
-                            <div className="flex flex-wrap content-center">
-                                <label>{`כישורים`}</label>
-                            </div>
-
-                            <Autocomplete
-                                multiple
-                                value={skillSets}
-                                onChange={(_event, newValue) => {
-                                    setSkillSets(newValue);
-                                }}
-                                id="skills"
-                                options={allSkills}
-                                disableCloseOnSelect
-                                getOptionLabel={(option) => option.name}
-                                renderOption={(props, option) => (
-                                    <li {...props}>
-                                        <Checkbox
-                                            icon={
-                                                <CheckBoxOutlineBlankIcon fontSize="small" />
-                                            }
-                                            checkedIcon={
-                                                <CheckBoxIcon fontSize="small" />
-                                            }
-                                            style={{ marginRight: 8 }}
-                                            checked={
-                                                !!skillSets.find(
-                                                    (curr) =>
-                                                        curr.id === option.id
-                                                )
-                                            }
-                                        />
-                                        {option.name}
-                                    </li>
-                                )}
-                                style={{ width: 400 }}
-                                renderInput={(params) => (
-                                    <TextField {...params} label="Skills" />
-                                )}
-                            />
-                        </div>
-                        <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
-                            <div className="flex flex-wrap content-center justify-center">
-                                <label>{`מילות חיפוש`}</label>
-                            </div>
-                            <TextField
-                                id="keyword"
-                                label="Keywords"
-                                variant="standard"
-                                style={{ height: 'fit-content' }}
-                                value={keyword}
-                                onChange={(
-                                    event: React.ChangeEvent<HTMLInputElement>
-                                ) => {
-                                    setKeyword(event.target.value);
-                                }}
-                            />
-                        </div>
-                    </div>
-                    <div className="grid grid-flow-col auto-cols-fr gap-x-32 mx-96">
-                        {/* <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
-                            <div className="flex flex-wrap content-center">
-                                <label>{`עבודה`}</label>
-                            </div>
-                            <Select
-                                id="isWorkingOnProject"
-                                value={isWorkingOnProject}
-                                onChange={handleIsWorkingOnProjectChange}
-                            >
-                                <MenuItem value={'NoPreference'}>
-                                    {`ללא העדפה`}
-                                </MenuItem>
-                                <MenuItem value={'Selected'}>{`עובד`}</MenuItem>
-                                <MenuItem
-                                    value={'NonSelected'}
-                                >{`לא עובד`}</MenuItem>
-                            </Select>
-                        </div> */}
-
-                        {/* <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
-                            <div className="flex flex-wrap content-center">
-                                <label>{`מאומת`}</label>
-                            </div>
-                            <Select
-                                labelId="isVerified"
-                                id="isVerified"
-                                value={isVerified}
-                                onChange={handleIsVerifiedChange}
-                            >
-                                <MenuItem value={'NoPreference'}>
-                                    {`ללא העדפה`}
-                                </MenuItem>
-                                <MenuItem
-                                    value={'Selected'}
-                                >{`מאומת`}</MenuItem>
-                                <MenuItem
-                                    value={'NonSelected'}
-                                >{`לא מאומת`}</MenuItem>
-                            </Select>
-                        </div> */}
-                    </div>
-                </div>
-            )}
-
-            <FiltersBox
-                filters={[
-                    {
-                        type: 'YesNo',
-                        title: 'עבודה',
-                        isActive: Boolean(activeFiltersMap['working']),
-                        value: isWorkingOnProject,
-                        setValue: setIsWorkingOnProject,
-                        onOpenChange: (open: boolean) => {
-                            if (open && !activeFiltersMap['working']) {
-                                setActiveFiltersMap((prevMap) => ({
-                                    ...prevMap,
-                                    working: true,
-                                }));
-                            }
+            <div className="flex justify-center">
+                <FiltersBox
+                    filters={[
+                        {
+                            type: 'YesNo',
+                            title: 'עבודה',
+                            isActive: Boolean(activeFiltersMap['working']),
+                            value: isWorkingOnProject,
+                            setValue: setIsWorkingOnProject,
+                            onOpenChange: (open: boolean) => {
+                                if (open && !activeFiltersMap['working']) {
+                                    setActiveFiltersMap((prevMap) => ({
+                                        ...prevMap,
+                                        working: true,
+                                    }));
+                                }
+                            },
                         },
-                    },
-                    {
-                        type: 'Skills',
-                        title: 'כישורים',
-                        isActive: Boolean(activeFiltersMap['skills']),
-                        value: skillSets,
-                        setValue: setSkillSets,
-                        allSkills: allSkills,
-                        onOpenChange: (open: boolean) => {
-                            if (open && !activeFiltersMap['skills']) {
-                                setActiveFiltersMap((prevMap) => ({
-                                    ...prevMap,
-                                    skills: true,
-                                }));
-                            }
+                        {
+                            type: 'Skills',
+                            title: 'כישורים',
+                            isActive: Boolean(activeFiltersMap['skills']),
+                            value: skillSets,
+                            setValue: setSkillSets,
+                            allSkills: allSkills,
+                            onOpenChange: (open: boolean) => {
+                                if (open && !activeFiltersMap['skills']) {
+                                    setActiveFiltersMap((prevMap) => ({
+                                        ...prevMap,
+                                        skills: true,
+                                    }));
+                                }
+                            },
                         },
-                    },
-                    {
-                        type: 'YesNo',
-                        title: 'מאומת',
-                        isActive: Boolean(activeFiltersMap['verified']),
-                        value: isVerified,
-                        setValue: setIsVerified,
-                        onOpenChange: (open: boolean) => {
-                            if (open && !activeFiltersMap['verified']) {
-                                setActiveFiltersMap((prevMap) => ({
-                                    ...prevMap,
-                                    verified: true,
-                                }));
-                            }
+                        {
+                            type: 'YesNo',
+                            title: 'מאומת',
+                            isActive: Boolean(activeFiltersMap['verified']),
+                            value: isVerified,
+                            setValue: setIsVerified,
+                            onOpenChange: (open: boolean) => {
+                                if (open && !activeFiltersMap['verified']) {
+                                    setActiveFiltersMap((prevMap) => ({
+                                        ...prevMap,
+                                        verified: true,
+                                    }));
+                                }
+                            },
                         },
-                    },
-                ]}
-            />
+                        {
+                            type: 'Keyword',
+                            title: 'מילות חיפוש',
+                            isActive: Boolean(activeFiltersMap['keyword']),
+                            value: keyword,
+                            setValue: setKeyword,
+                            onOpenChange: (open: boolean) => {
+                                if (open && !activeFiltersMap['keyword']) {
+                                    setActiveFiltersMap((prevMap) => ({
+                                        ...prevMap,
+                                        verified: true,
+                                    }));
+                                }
+                            },
+                        },
+                    ]}
+                />
+            </div>
 
             <div className="flex justify-center w-full my-4 gap-2">
                 <Button onClick={searchVolunteers} disabled={isLoading}>
