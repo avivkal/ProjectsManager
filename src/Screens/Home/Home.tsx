@@ -122,47 +122,68 @@ const Home = () => {
         <div style={{ padding: '50px 30px' }}>
             {isFiltersBoxOpen && (
                 <div dir="rtl">
-                    <div className="grid grid-cols-[90px_350px] mb-8">
-                        <label>{`כישורים`}</label>
+                    <div className="grid grid-flow-col auto-cols-fr gap-x-32 mx-96">
+                        <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
+                            <div className="flex flex-wrap content-center">
+                                <label>{`כישורים`}</label>
+                            </div>
 
-                        <Autocomplete
-                            multiple
-                            value={skillSets}
-                            onChange={(_event, newValue) => {
-                                setSkillSets(newValue);
-                            }}
-                            id="skills"
-                            options={allSkills}
-                            disableCloseOnSelect
-                            getOptionLabel={(option) => option.name}
-                            renderOption={(props, option, { selected }) => (
-                                <li {...props}>
-                                    <Checkbox
-                                        icon={
-                                            <CheckBoxOutlineBlankIcon fontSize="small" />
-                                        }
-                                        checkedIcon={
-                                            <CheckBoxIcon fontSize="small" />
-                                        }
-                                        style={{ marginRight: 8 }}
-                                        checked={
-                                            !!skillSets.find(
-                                                (curr) => curr.id === option.id
-                                            )
-                                        }
-                                    />
-                                    {option.name}
-                                </li>
-                            )}
-                            style={{ width: 350 }}
-                            renderInput={(params) => (
-                                <TextField {...params} label="Skills" />
-                            )}
-                        />
+                            <Autocomplete
+                                multiple
+                                value={skillSets}
+                                onChange={(_event, newValue) => {
+                                    setSkillSets(newValue);
+                                }}
+                                id="skills"
+                                options={allSkills}
+                                disableCloseOnSelect
+                                getOptionLabel={(option) => option.name}
+                                renderOption={(props, option) => (
+                                    <li {...props}>
+                                        <Checkbox
+                                            icon={
+                                                <CheckBoxOutlineBlankIcon fontSize="small" />
+                                            }
+                                            checkedIcon={
+                                                <CheckBoxIcon fontSize="small" />
+                                            }
+                                            style={{ marginRight: 8 }}
+                                            checked={
+                                                !!skillSets.find(
+                                                    (curr) =>
+                                                        curr.id === option.id
+                                                )
+                                            }
+                                        />
+                                        {option.name}
+                                    </li>
+                                )}
+                                style={{ width: 400 }}
+                                renderInput={(params) => (
+                                    <TextField {...params} label="Skills" />
+                                )}
+                            />
+                        </div>
+                        <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
+                            <div className="flex flex-wrap content-center justify-center">
+                                <label>{`מילות חיפוש`}</label>
+                            </div>
+                            <TextField
+                                id="keyword"
+                                label="Keywords"
+                                variant="standard"
+                                style={{ height: 'fit-content' }}
+                                value={keyword}
+                                onChange={(
+                                    event: React.ChangeEvent<HTMLInputElement>
+                                ) => {
+                                    setKeyword(event.target.value);
+                                }}
+                            />
+                        </div>
                     </div>
-
-                    <div className="grid grid-flow-col auto-cols-fr gap-x-32">
-                        <div className="grid grid-flow-col grid-cols-[90px_350px] mb-8">
+                    <div className="grid grid-flow-col auto-cols-fr gap-x-32 mx-96">
+                        <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
                             <div className="flex flex-wrap content-center">
                                 <label>{`עבודה`}</label>
                             </div>
@@ -181,29 +202,8 @@ const Home = () => {
                             </Select>
                         </div>
 
-                        <div className="grid grid-flow-col grid-cols-[90px_350px] mb-8">
-                            <div className="flex flex-wrap content-center justify-center">
-                                <label>{`סטודנט`}</label>
-                            </div>
-                            <Select
-                                id="isStudent"
-                                value={isStudent}
-                                onChange={handleStudentChange}
-                            >
-                                <MenuItem value={'NoPreference'}>
-                                    {`ללא העדפה`}
-                                </MenuItem>
-                                <MenuItem
-                                    value={'Selected'}
-                                >{`סטודנט`}</MenuItem>
-                                <MenuItem
-                                    value={'NonSelected'}
-                                >{`לא סטודנט`}</MenuItem>
-                            </Select>
-                        </div>
-
-                        <div className="grid grid-flow-col grid-cols-[90px_350px] mb-8">
-                            <div className="flex flex-wrap content-center justify-center">
+                        <div className="grid grid-flow-col grid-cols-[100px_400px] mb-8">
+                            <div className="flex flex-wrap content-center">
                                 <label>{`מאומת`}</label>
                             </div>
                             <Select
@@ -223,22 +223,6 @@ const Home = () => {
                                 >{`לא מאומת`}</MenuItem>
                             </Select>
                         </div>
-                    </div>
-
-                    <div className="grid grid-cols-[220px_200px] mb-8">
-                        <label>{`מילות חיפוש`}</label>
-                        <TextField
-                            id="keyword"
-                            label="Keywords"
-                            variant="standard"
-                            style={{ height: 'fit-content' }}
-                            value={keyword}
-                            onChange={(
-                                event: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                                setKeyword(event.target.value);
-                            }}
-                        />
                     </div>
                 </div>
             )}
