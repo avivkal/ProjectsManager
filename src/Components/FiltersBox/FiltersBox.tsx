@@ -8,35 +8,43 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { Skill } from '../../utils/types';
 
-type YesNoFilter = {
-    type: 'YesNo';
+interface BaseFilter {
     title: string;
     isActive: boolean;
+    onOpenChange: (open: boolean) => void;
+}
+
+interface VerifiedFilter extends BaseFilter {
+    type: 'Verified';
     value: boolean;
     setValue: Dispatch<SetStateAction<boolean>>;
-    onOpenChange: (open: boolean) => void;
-};
+}
 
-type SkillsFilter = {
+interface WorkingFilter extends BaseFilter {
+    type: 'Working';
+    value: boolean;
+    setValue: Dispatch<SetStateAction<boolean>>;
+}
+
+interface SkillsFilter extends BaseFilter {
     type: 'Skills';
-    title: string;
-    isActive: boolean;
     value: Skill[];
     setValue: Dispatch<SetStateAction<Skill[]>>;
     allSkills: Skill[];
     onOpenChange: (open: boolean) => void;
-};
+}
 
-type KeywordFilter = {
+interface KeywordFilter extends BaseFilter {
     type: 'Keyword';
-    title: string;
-    isActive: boolean;
     value: string;
     setValue: Dispatch<SetStateAction<string>>;
-    onOpenChange: (open: boolean) => void;
-};
+}
 
-type Filter = YesNoFilter | SkillsFilter | KeywordFilter;
+export type Filter =
+    | VerifiedFilter
+    | WorkingFilter
+    | SkillsFilter
+    | KeywordFilter;
 
 interface FiltersBoxProps {
     filters: Filter[];
@@ -70,11 +78,13 @@ export function FiltersBox({ filters }: FiltersBoxProps) {
                             <PopoverContent
                                 className={cn(
                                     filter.type === 'Skills'
-                                        ? 'w-[75vh]'
+                                        ? 'w-[55vh]'
                                         : 'w-80'
                                 )}
                             >
-                                {filter.type === 'YesNo' && (
+                                {['Working', 'Verified'].includes(
+                                    filter.type
+                                ) && (
                                     <Toggle
                                         options={[
                                             {
@@ -86,8 +96,12 @@ export function FiltersBox({ filters }: FiltersBoxProps) {
                                                 title: 'לא',
                                             },
                                         ]}
-                                        value={filter.value}
-                                        onChange={filter.setValue}
+                                        value={filter.value as boolean}
+                                        onChange={
+                                            filter.setValue as Dispatch<
+                                                SetStateAction<boolean>
+                                            >
+                                        }
                                     />
                                 )}
                                 {filter.type == 'Skills' && (
@@ -138,16 +152,18 @@ export function FiltersBox({ filters }: FiltersBoxProps) {
                                     </div>
                                 )}
                                 {filter.type === 'Keyword' && (
-                                    <TextField
-                                        id="keyword"
-                                        label="Keywords"
-                                        variant="standard"
-                                        style={{ height: 'fit-content' }}
-                                        value={filter.value}
-                                        onChange={(e) => {
-                                            filter.setValue(e.target.value);
-                                        }}
-                                    />
+                                    <div className="flex justify-center">
+                                        <TextField
+                                            id="keyword"
+                                            label="Keywords"
+                                            variant="standard"
+                                            style={{ height: 'fit-content' }}
+                                            value={filter.value}
+                                            onChange={(e) => {
+                                                filter.setValue(e.target.value);
+                                            }}
+                                        />
+                                    </div>
                                 )}
                             </PopoverContent>
                         </Popover>
