@@ -7,7 +7,6 @@ import Login from './Screens/Login/Login';
 import Signup from './Screens/Signup/Signup';
 import awsconfig from './aws-exports';
 import { protectedRoutes } from './utils/routes';
-import Home from './Screens/Home/Home';
 import { Layout } from './Components/Layout/Layout';
 
 Amplify.configure(awsconfig);

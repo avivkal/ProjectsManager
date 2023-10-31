@@ -104,7 +104,7 @@ export function FiltersBox({ filters }: FiltersBoxProps) {
                                         }
                                     />
                                 )}
-                                {filter.type == 'Skills' && (
+                                {filter.type === 'Skills' && (
                                     <div className="flex justify-center">
                                         <Autocomplete
                                             id="skills"
