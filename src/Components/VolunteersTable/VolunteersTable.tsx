@@ -1,15 +1,8 @@
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, Row } from '@tanstack/react-table';
 import { Status, Volunteer } from '../../utils/types';
 import { DataTable } from '../common/DataTable/DataTable';
-import { Button } from '../common/button';
-import { Linkedin } from 'lucide-react';
-
-const hebrewStatusesMap = {
-    [Status.NOT_PROCESSED]: 'לא מעובד',
-    [Status.AUTHORIZED]: 'מאושר',
-    [Status.SUSPICIOUS]: 'חשוד',
-    [Status.MESSAGE_SENT]: 'הודעה נשלחה',
-};
+import { VolunteerCard } from './VolunteerCard';
+import { hebrewStatusesMap } from '../../utils/statusStringsMap';
 
 const columns: ColumnDef<Volunteer>[] = [
     {
@@ -25,46 +18,11 @@ const columns: ColumnDef<Volunteer>[] = [
         accessorKey: 'email',
         header: 'אימייל',
     },
+    { accessorKey: 'job_title', header: 'תפקיד' },
     {
         accessorKey: 'status',
         header: 'מאומת',
-        cell: (c) => (
-            <span>
-                {
-                    hebrewStatusesMap[
-                        c.getValue() as keyof typeof hebrewStatusesMap
-                    ]
-                }
-            </span>
-        ),
-    },
-    { accessorKey: 'job_title', header: 'תפקיד' },
-    {
-        accessorKey: 'linkedin_profile',
-        header: 'קישור',
-        cell: (c) => (
-            <span>
-                <Button variant="link" size="icon">
-                    <Button asChild>
-                        <a
-                            href={c.getValue() as string}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <Linkedin className="h-4 w-4" />
-                        </a>
-                    </Button>
-                </Button>
-            </span>
-        ),
-    },
-    {
-        accessorKey: 'can_help_with',
-        header: 'יכול לעזור ב',
-
-        cell: (c) => (
-            <span className="truncate max-w-md">{c.getValue() as string}</span>
-        ),
+        cell: (c) => <span>{hebrewStatusesMap[c.getValue() as Status]}</span>,
     },
 ];
 
@@ -72,6 +30,21 @@ interface VolunteersTableProps {
     volunteers: Volunteer[];
 }
 
+const renderSubComponent = ({ row }: { row: Row<Volunteer> }) => {
+    return (
+        <div className="px-28">
+            <VolunteerCard volunteer={row.original} />
+        </div>
+    );
+};
+
 export function VolunteersTable({ volunteers }: VolunteersTableProps) {
-    return <DataTable columns={columns} data={volunteers} />;
+    return (
+        <DataTable
+            columns={columns}
+            data={volunteers}
+            getRowCanExpand={() => true}
+            renderSubComponent={renderSubComponent}
+        />
+    );
 }
