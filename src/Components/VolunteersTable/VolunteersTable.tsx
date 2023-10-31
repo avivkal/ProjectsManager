@@ -1,56 +1,77 @@
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { ColumnDef } from '@tanstack/react-table';
 import { Status, Volunteer } from '../../utils/types';
-
-interface Props {
-    volunteers: Volunteer[]
-}
+import { DataTable } from '../common/DataTable/DataTable';
+import { Button } from '../common/button';
+import { Linkedin } from 'lucide-react';
 
 const hebrewStatusesMap = {
-    [Status.NOT_PROCESSED]: "לא מעובד",
-    [Status.AUTHORIZED]: "מאושר",
-    [Status.SUSPICIOUS]: "חשוד",
-    [Status.MESSAGE_SENT]: "הודעה נשלחה",
-}
+    [Status.NOT_PROCESSED]: 'לא מעובד',
+    [Status.AUTHORIZED]: 'מאושר',
+    [Status.SUSPICIOUS]: 'חשוד',
+    [Status.MESSAGE_SENT]: 'הודעה נשלחה',
+};
 
-const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Name', width: 130 },
-    { field: 'job_title', headerName: 'Job Title', width: 200 },
-    { field: 'can_help_with', headerName: 'Can Help With', width: 300 },
-    { field: 'whatsapp_num', headerName: 'Phone Number', width: 130 },
-    { field: 'email', headerName: 'Email', width: 200 },
-    { field: 'linkedin_profile', headerName: 'Linkedin Profile', width: 200 },
-    { field: 'comments', headerName: 'Comments', width: 130 },
+const columns: ColumnDef<Volunteer>[] = [
     {
-        field: 'status', headerName: 'Status', width: 130, valueGetter: (params: GridValueGetterParams) =>
-            hebrewStatusesMap[params.row.status as keyof typeof hebrewStatusesMap]
+        accessorKey: 'name',
+        header: 'שם',
     },
     {
-        field: 'is_student', headerName: 'Is Student', width: 130, valueGetter: (params: GridValueGetterParams) =>
-            params.row.is_student ? 'כן' : 'לא'
-    }
+        accessorKey: 'whatsapp_num',
+        header: 'טלפון',
+        cell: (c) => <span dir="ltr">{c.getValue() as string}</span>,
+    },
+    {
+        accessorKey: 'email',
+        header: 'אימייל',
+    },
+    {
+        accessorKey: 'status',
+        header: 'מאומת',
+        cell: (c) => (
+            <span>
+                {
+                    hebrewStatusesMap[
+                        c.getValue() as keyof typeof hebrewStatusesMap
+                    ]
+                }
+            </span>
+        ),
+    },
+    { accessorKey: 'job_title', header: 'תפקיד' },
+    {
+        accessorKey: 'linkedin_profile',
+        header: 'קישור',
+        cell: (c) => (
+            <span>
+                <Button variant="link" size="icon">
+                    <Button asChild>
+                        <a
+                            href={c.getValue() as string}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <Linkedin className="h-4 w-4" />
+                        </a>
+                    </Button>
+                </Button>
+            </span>
+        ),
+    },
+    {
+        accessorKey: 'can_help_with',
+        header: 'יכול לעזור ב',
+
+        cell: (c) => (
+            <span className="truncate max-w-md">{c.getValue() as string}</span>
+        ),
+    },
 ];
 
-
-const VolunteersTable = ({ volunteers }: Props) => {
-    
-
-    return (volunteers?.length > 0 ? <div>
-
-        <DataGrid
-            rows={volunteers}
-            columns={columns}
-            initialState={{
-                pagination: {
-                    paginationModel: { page: 0, pageSize: 5 },
-                },
-            }}
-            rowSelection={false}
-            pageSizeOptions={[5, 10, 25]}
-        />
-
-
-    </div> : null);
+interface VolunteersTableProps {
+    volunteers: Volunteer[];
 }
 
-export default VolunteersTable;
+export function VolunteersTable({ volunteers }: VolunteersTableProps) {
+    return <DataTable columns={columns} data={volunteers} />;
+}
