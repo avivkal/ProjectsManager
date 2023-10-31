@@ -14,20 +14,15 @@ import { Button } from '../../Components/common/button';
 import { Loader2, Search } from 'lucide-react';
 import { FiltersBox, Filter } from '../../Components/FiltersBox/FiltersBox';
 
-type ActiveFiltersMap = Record<Filter['type'], boolean>;
-
 const Home = () => {
     // ! if enters without auth kick him out
     const [allSkills, setAllSkills] = useState<Skill[]>([]);
     const [volunteers, setVolunteers] = useState<Volunteer[]>([]);
     const [skillSets, setSkillSets] = useState<Skill[]>([]);
     const [keyword, setKeyword] = useState<string>('');
-    const [isWorkingOnProject, setIsWorkingOnProject] = useState(true);
-    const [isVerified, setIsVerified] = useState(true);
+    const [isWorkingOnProject, setIsWorkingOnProject] = useState(false);
+    const [isVerified, setIsVerified] = useState(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [activeFiltersMap, setActiveFiltersMap] = useState<ActiveFiltersMap>(
-        {} as ActiveFiltersMap
-    );
 
     useEffect(() => {
         fetchAllSkills();
@@ -66,22 +61,10 @@ const Home = () => {
                 {
                     email: userInfo.username,
                     user_type: 'manager',
-                    skill_sets:
-                        activeFiltersMap['Skills'] !== undefined
-                            ? skillSets.map((current) => current.id)
-                            : [],
-                    keywords:
-                        activeFiltersMap['Keyword'] !== undefined
-                            ? keyword
-                            : '',
-                    is_working_on_project:
-                        activeFiltersMap['Working'] !== undefined
-                            ? isWorkingOnProject
-                            : null,
-                    is_verified:
-                        activeFiltersMap['Verified'] !== undefined
-                            ? isVerified
-                            : null,
+                    skill_sets: skillSets.map((current) => current.id),
+                    keywords: keyword,
+                    is_working_on_project: isWorkingOnProject,
+                    is_verified: isVerified,
                 }
             );
 
@@ -100,18 +83,6 @@ const Home = () => {
         }
     };
 
-    const handleFilterOpenChange = (
-        open: boolean,
-        filterType: Filter['type']
-    ) => {
-        if (open && !activeFiltersMap[filterType]) {
-            setActiveFiltersMap((prevMap) => ({
-                ...prevMap,
-                [filterType]: true,
-            }));
-        }
-    };
-
     return (
         <div style={{ padding: '50px 30px' }}>
             <div className="flex justify-center">
@@ -119,40 +90,34 @@ const Home = () => {
                     filters={[
                         {
                             type: 'Working',
-                            title: 'עבודה',
-                            isActive: Boolean(activeFiltersMap['Working']),
+                            title: 'פניות',
+                            isActive: isWorkingOnProject,
                             value: isWorkingOnProject,
-                            setValue: setIsWorkingOnProject,
-                            onOpenChange: (open: boolean) =>
-                                handleFilterOpenChange(open, 'Working'),
+                            setValue: (newIsWorking) =>
+                                setIsWorkingOnProject(newIsWorking),
                         },
                         {
                             type: 'Skills',
                             title: 'כישורים',
-                            isActive: Boolean(activeFiltersMap['Skills']),
+                            isActive: skillSets.map((s) => s.name).length > 0,
                             value: skillSets,
                             setValue: setSkillSets,
                             allSkills: allSkills,
-                            onOpenChange: (open: boolean) =>
-                                handleFilterOpenChange(open, 'Skills'),
                         },
                         {
                             type: 'Verified',
                             title: 'מאומת',
-                            isActive: Boolean(activeFiltersMap['Verified']),
+                            isActive: isVerified,
                             value: isVerified,
-                            setValue: setIsVerified,
-                            onOpenChange: (open: boolean) =>
-                                handleFilterOpenChange(open, 'Verified'),
+                            setValue: (newIsVerified) =>
+                                setIsVerified(newIsVerified),
                         },
                         {
                             type: 'Keyword',
                             title: 'מילות חיפוש',
-                            isActive: Boolean(activeFiltersMap['Keyword']),
+                            isActive: keyword.length > 0,
                             value: keyword,
                             setValue: setKeyword,
-                            onOpenChange: (open: boolean) =>
-                                handleFilterOpenChange(open, 'Keyword'),
                         },
                     ]}
                 />
@@ -166,13 +131,6 @@ const Home = () => {
                         <Search className="mr-2 h-4 w-4" />
                     )}
                     {`חיפוש`}
-                </Button>
-
-                <Button
-                    variant="outline"
-                    onClick={() => setActiveFiltersMap({} as ActiveFiltersMap)}
-                >
-                    {`נקה פילטרים`}
                 </Button>
             </div>
 
