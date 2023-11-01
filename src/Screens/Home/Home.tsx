@@ -12,7 +12,12 @@ import {
 } from '../../utils/types';
 import { Button } from '../../Components/common/button';
 import { Loader2, Search } from 'lucide-react';
-import { FiltersBox, Filter } from '../../Components/FiltersBox/FiltersBox';
+import { FiltersBox } from '../../Components/FiltersBox/FiltersBox';
+import { FiltersPreview } from '../../Components/FiltersPreview/FiltersPreview';
+
+function removeFromArray<T>(array: T[], item: T) {
+    return array.filter((el) => el !== item);
+}
 
 const Home = () => {
     // ! if enters without auth kick him out
@@ -85,7 +90,7 @@ const Home = () => {
 
     return (
         <div style={{ padding: '50px 30px' }}>
-            <div className="flex justify-center">
+            <div dir="rtl" className="flex justify-center items-stretch gap-6">
                 <FiltersBox
                     filters={[
                         {
@@ -121,19 +126,31 @@ const Home = () => {
                         },
                     ]}
                 />
-            </div>
 
-            <div className="flex justify-center w-full my-4 gap-2">
-                <Button onClick={searchVolunteers} disabled={isLoading}>
-                    {isLoading ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : (
-                        <Search className="mr-2 h-4 w-4" />
-                    )}
-                    {`חיפוש`}
-                </Button>
+                <div className="border-2 border-[#00F3DB] rounded-xl">
+                    <Button
+                        variant="ghost"
+                        onClick={searchVolunteers}
+                        disabled={isLoading}
+                        className="h-full rounded-xl"
+                    >
+                        {isLoading ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                            <Search className="h-4 w-4" />
+                        )}
+                    </Button>
+                </div>
             </div>
-
+            <FiltersPreview
+                skills={skillSets}
+                onSkillRemove={(skill) =>
+                    setSkillSets((prevSkills) =>
+                        removeFromArray(prevSkills, skill)
+                    )
+                }
+                keyword={keyword}
+            />
             <VolunteersTable volunteers={volunteers} />
         </div>
     );

@@ -56,7 +56,7 @@ export function FiltersBox({ filters }: FiltersBoxProps) {
     return (
         <div
             dir="rtl"
-            className="grid grid-flow-col auto-cols-auto p-4 rounded-xl bg-[#00F3DB]"
+            className="grid grid-flow-col auto-cols-auto p-2 rounded-xl bg-[#00F3DB]"
         >
             <ul className="flex justify-center gap-2">
                 {filters.map((filter) => (
